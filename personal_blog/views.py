@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.views.generic import DetailView, ListView, View, UpdateView, CreateView
 from django.urls import reverse_lazy
 from .forms import PostForm
-from .models import Category, Post
+from .models import Category, Post, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -13,6 +13,7 @@ class CategoryMixin:
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all().order_by("name")
+        context["tags"] = Tag.objects.all().order_by("name")
         context["recent_posts"] = Post.objects.filter(status="published").order_by(
             "-created_at"
         )[:5]
@@ -27,6 +28,15 @@ class PostListView(CategoryMixin, ListView):
     template_name = "News_template/News_list.html"
     context_object_name = "posts"
     queryset = Post.objects.filter(status="published").order_by("-published_at")
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["trending_posts"] = Post.objects.all().order_by("-views_count")[:3]
+        context["featured_post"] = Post.objects.filter(featured_post=True).order_by("-created_at").first()
+        
+        return context
+
+        
 
 class DraftListView(CategoryMixin, ListView, LoginRequiredMixin):
     model = Post
@@ -200,3 +210,17 @@ class SearchPostView(View):
             return render(request, self.template_name, {"posts":posts, "categories":categories, "recent_posts":recent_posts,"top_posts":top_posts})
         
 
+class ContactView(View):
+    template_name= "News_template/Contact.html"
+
+    def get(self,request, *args, **kwargs):
+        return render(request, self.template_name)
+    
+    def post(self,request, *args, **kwargs):
+       pass
+
+class AboutView(View):
+    template_name = "News_template/About.html"
+
+    def get(self,request,*args, **kwargs):
+        return render(request, self.template_name)

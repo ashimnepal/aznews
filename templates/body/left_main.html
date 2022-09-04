@@ -3,10 +3,10 @@
     <!-- Trending Top -->
     <div class="trending-top mb-30">
         <div class="trend-top-img">
-            <img src="{% static 'img/trending/trending_top.jpg' %}" alt="">
+            <img src="{{ featured_post.featured_image.url}}" alt="">
             <div class="trend-top-cap">
-                <span>Appetizers</span>
-                <h2><a href="details.html">Welcome To The Best Model Winner<br> Contest At Look of the year</a></h2>
+                <span>{{featured_post.category.name}}</span>
+                <h2><a href="details.html">{{featured_post.title}}</a></h2>
             </div>
         </div>
     </div>

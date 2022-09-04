@@ -40,6 +40,7 @@ class Post(TimeStampModel):
     # Unpublished => display in form
 
     title = models.CharField(max_length=256)
+    featured_post = models.BooleanField(default=False)
     featured_image = models.ImageField(
         upload_to="post_images/%Y/%m/%d",
     )

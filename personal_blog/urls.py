@@ -2,6 +2,8 @@ from unicodedata import name
 from django.urls import path
 
 from .views import (
+    AboutView,
+    ContactView,
     DraftListView,
     PostCreateView,
     PostDetailView,
@@ -68,4 +70,16 @@ urlpatterns = [
         SearchPostView.as_view(),
         name="post-list-search",
     ),
+    path(
+        "contact/",
+        ContactView.as_view(),
+        name="contact",
+    ),
+    path(
+        "about/",
+        AboutView.as_view(),
+        name="about",
+    ),
+
+
 ]
