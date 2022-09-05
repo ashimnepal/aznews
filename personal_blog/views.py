@@ -1,3 +1,4 @@
+from datetime import timedelta
 from unicodedata import category
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
@@ -30,9 +31,11 @@ class PostListView(CategoryMixin, ListView):
     queryset = Post.objects.filter(status="published").order_by("-published_at")
 
     def get_context_data(self, *args, **kwargs):
+        one_week_ago = timezone.now() - timedelta(days=7)        
         context = super().get_context_data(*args, **kwargs)
         context["trending_posts"] = Post.objects.all().order_by("-views_count")[:3]
         context["featured_post"] = Post.objects.filter(featured_post=True).order_by("-created_at").first()
+        context["random_posts"] = Post.objects.filter(published_at__gte=one_week_ago).order_by("?")[:3]
         
         return context
 
