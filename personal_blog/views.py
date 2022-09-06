@@ -1,4 +1,6 @@
 from datetime import timedelta
+import imp
+from multiprocessing import context
 from unicodedata import category
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
@@ -8,6 +10,7 @@ from django.urls import reverse_lazy
 from .forms import PostForm
 from .models import Category, Post, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 
 
 class CategoryMixin:
@@ -36,6 +39,7 @@ class PostListView(CategoryMixin, ListView):
         context["trending_posts"] = Post.objects.all().order_by("-views_count")[:3]
         context["featured_post"] = Post.objects.filter(featured_post=True).order_by("-created_at").first()
         context["random_posts"] = Post.objects.filter(published_at__gte=one_week_ago).order_by("?")[:3]
+        context["weekly_top_posts"] = Post.objects.filter(published_at__gte=one_week_ago).order_by("-views_count")[:7]
         
         return context
 
@@ -97,14 +101,17 @@ class PostListByTag(View):
 
 class PostDetailView(CategoryMixin, DetailView):
     model = Post
-    template_name = "blog/post_detail.html"
+    template_name = "News_template/news_detail.html"
     context_object_name = "post"
 
     def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
         obj = self.get_object()
         obj.views_count += 1
         obj.save()
-        return super().get_context_data(*args, **kwargs)
+        context["previous_post"] = (Post.objects.filter(~Q(id=obj.id) & Q(status = "published")).order_by("?").first())
+        context["next_post"] = (Post.objects.filter(~Q(id=obj.id) & Q(status = "published")).order_by("?").first())
+        return context
 
 
 

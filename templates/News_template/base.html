@@ -29,10 +29,23 @@
    </head>
 
    <body>
+    {% include "body/preloader.html" %}
+
+   {% include "partials/Header.html" %}
        
+
+
+
     {% block content %}
 
     {% endblock content %}
+
+
+
+
+    
+
+    {% include "footer/footer.html" %}
    
 	<!-- JS here -->
 	
