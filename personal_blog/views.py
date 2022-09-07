@@ -54,11 +54,12 @@ class DraftListView(CategoryMixin, ListView, LoginRequiredMixin):
 
 class PostListByCategory(View):
     model = Post
-    template_name = "blog/post_list.html"
+    template_name = "body/news_list.html"
 
     def get(self, request, cat_id, *args, **kwargs):
         posts = Post.objects.filter(category=cat_id).order_by("published_at")
         categories = Category.objects.all().order_by("name")
+        tags = Category.objects.all().order_by("name")
         recent_posts = Post.objects.filter(status="published").order_by(
             "-created_at"
         )[:5]
@@ -66,12 +67,13 @@ class PostListByCategory(View):
             "-views_count"
         )[:5]
         current_category = Category.objects.get(id=cat_id)
-
+        
         return render(
             request,
             self.template_name,
             {
                 "posts": posts,
+                "tags": tags,
                 "categories": categories,
                 "current_category_id": cat_id,
                 "current_category_name": current_category.name,

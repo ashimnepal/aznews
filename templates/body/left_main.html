@@ -1,6 +1,7 @@
 {% load static %}
 <div class="col-lg-8">
     <!-- Trending Top -->
+    {% if featured_post %}
     <div class="trending-top mb-30">
         <div class="trend-top-img">
             <img src="{{ featured_post.featured_image.url}}" alt="">
@@ -10,6 +11,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     <!-- Trending Bottom -->
     <div class="trending-bottom">
         <div class="row">
