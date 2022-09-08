@@ -1,0 +1,22 @@
+{% extends 'News_template\base.html' %}
+
+{% block content %}
+<div class="container" style="margin-top: 20px;">
+<form action="{% url 'post-create' %}" method="post" class="post-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <!-- <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Add Topic</label>
+        <input type="text" name="titles" class="form-control" id="exampleFormControlInput1" placeholder="Add Topic">
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Add Content</label>
+        <textarea class="form-control" name="contents" id="exampleFormControlTextarea1" rows="3" placeholder="Enter the Content."></textarea>
+      </div> -->
+
+      <button type="submit" class="btn btn-primary mb-3">Add Post</button>
+      
+</form>
+</div>
+{% endblock %}

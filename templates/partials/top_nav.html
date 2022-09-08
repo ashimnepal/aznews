@@ -1,4 +1,6 @@
+
 {% load static %}
+
 <div class="header-top black-bg d-none d-md-block">
     <div class="container">
         <div class="col-xl-12">
@@ -14,7 +16,14 @@
                          <li><a href="#"><i class="fab fa-twitter"></i></a></li>
                          <li><a href="#"><i class="fab fa-instagram"></i></a></li>
                         <li> <a href="#"><i class="fab fa-pinterest-p"></i></a></li>
+                    {% if user.is_authenticated %}                        
+                        <li> <a href="{% url 'post-create'%}"><span class="material-symbols-outlined">add</span></a></li>
+                        <li> <a href="{% url 'post-draft-list'%}"><span class="material-symbols-outlined">drafts</span></a></li>
+                        <li> <a href="{% url 'logout'%}"><span class="material-symbols-outlined">lock_open</span></a></li>
                      </ul>
+                    {% else %}
+                     <li> <a href="{% url 'login'%}"><span class="material-symbols-outlined">lock</span></a></li>
+                    {% endif %}
                  </div>
              </div>
         </div>

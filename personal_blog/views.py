@@ -1,5 +1,4 @@
 from datetime import timedelta
-import imp
 from multiprocessing import context
 from unicodedata import category
 from django.contrib.auth.decorators import login_required
@@ -120,51 +119,12 @@ class PostDetailView(CategoryMixin, DetailView):
 class PostCreateView(CreateView):
     model= Post
     form_class= PostForm
-    template_name= "blog/post_create.html"
+    template_name= "partials/post_create.html"
     success_url= reverse_lazy("post-list")
     
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-
-
-# def post_create(request):
-    # if request.method == "POST":
-    #     form = PostForm(request.POST)
-    #     if form.is_valid():
-    #         post = form.save(commit=False)
-    #         post.author = request.user
-    #         post.save()
-    #     return HttpResponseRedirect("/")
-    # else:
-    #     form = PostForm()
-    #     return render(
-    #         request,
-    #         "blog/post_create.html",
-    #         {"form": form},
-    #     )
-
-
-@login_required
-def post_edit(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-        return HttpResponseRedirect("/post-draft-list/")
-    else:
-        form = PostForm(instance=post)
-        return render(
-            request,
-            "blog/post_create.html",
-            {"form": form},
-        )
-
-
-
 
 
 class PostUpdateView(UpdateView):
@@ -176,32 +136,14 @@ class PostUpdateView(UpdateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+
+        
     # def get_success_url(self) -> str:
     #     return reverse(post-list)
 
-@login_required
-def post_draft_list(request):
-    drafts = Post.objects.filter(status = "unpublished").order_by("-created_at")
-    return render(
-        request,
-        "blog/post_draft_list.html",
-        {"drafts": drafts},
-    )
 
 
-@login_required
-def post_publish(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    post.published_date = timezone.now()
-    post.save()
-    return HttpResponseRedirect("/")
-
-
-@login_required
-def post_delete(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    post.delete()
-    return HttpResponseRedirect("/")
 
 
 class SearchPostView(View):
@@ -236,3 +178,69 @@ class AboutView(View):
 
     def get(self,request,*args, **kwargs):
         return render(request, self.template_name)
+
+
+class PostDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk, *args,**kwargs):
+        post = get_object_or_404(Post, pk=pk)
+        post.delete()
+        return HttpResponseRedirect("/")
+
+
+
+
+# @login_required
+# def post_delete(request, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     post.delete()
+# def post_create(request):
+    # if request.method == "POST":
+    #     form = PostForm(request.POST)
+    #     if form.is_valid():
+    #         post = form.save(commit=False)
+    #         post.author = request.user
+    #         post.save()
+    #     return HttpResponseRedirect("/")
+    # else:
+    #     form = PostForm()
+    #     return render(
+    #         request,
+    #         "blog/post_create.html",
+    #         {"form": form},
+    #     )
+
+
+# @login_required
+# def post_edit(request, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     if request.method == "POST":
+#         form = PostForm(request.POST, instance=post)
+#         if form.is_valid():
+#             post = form.save(commit=False)
+#             post.author = request.user
+#             post.save()
+#         return HttpResponseRedirect("/post-draft-list/")
+#     else:
+#         form = PostForm(instance=post)
+#         return render(
+#             request,
+#             "blog/post_create.html",
+#             {"form": form},
+#         )
+#     return HttpResponseRedirect("/")
+# @login_required
+# def post_draft_list(request):
+#     drafts = Post.objects.filter(status = "unpublished").order_by("-created_at")
+#     return render(
+#         request,
+#         "blog/post_draft_list.html",
+#         {"drafts": drafts},
+#     )
+
+
+# @login_required
+# def post_publish(request, pk):
+#     post = get_object_or_404(Post, pk=pk)
+#     post.published_date = timezone.now()
+#     post.save()
+#     return HttpResponseRedirect("/")
