@@ -1,21 +1,20 @@
 from unicodedata import name
 from django.urls import path
 
+from personal_blog.models import NewsLetter
+
 from .views import (
     AboutView,
     ContactView,
     DraftListView,
+    NewsLetterView,
     PostCreateView,
+    PostDeleteView,
     PostDetailView,
     PostListByCategory,
     PostListByTag,
     PostListView,
-    PostUpdateView,
-    
-    post_delete,
-    post_draft_list,
-    post_edit,
-    post_publish,
+    PostUpdateView,   
     SearchPostView,
 )
 
@@ -41,18 +40,13 @@ urlpatterns = [
         name="post-draft-list",
     ),
     path(
-        "post-publish/<int:pk>/",
-        post_publish,
-        name="post-publish",
-    ),
-    path(
         "post-edit/<int:pk>/",
         PostUpdateView.as_view(),
         name="post-edit",
     ),
     path(
         "post-delete/<int:pk>/",
-        post_delete,
+        PostDeleteView.as_view(),
         name="post-delete",
     ),
     path(
@@ -78,6 +72,11 @@ urlpatterns = [
     path(
         "about/",
         AboutView.as_view(),
+        name="about",
+    ),
+    path(
+        "newsletter/",
+        NewsLetterView.as_view(),
         name="about",
     ),
 

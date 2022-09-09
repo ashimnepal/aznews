@@ -1,7 +1,7 @@
 from tkinter import Widget
 from django import forms
 from django_summernote.widgets import SummernoteWidget
-from .models import Post
+from .models import Contact, NewsLetter, Post
 
 
 class PostForm(forms.ModelForm):
@@ -14,3 +14,15 @@ class PostForm(forms.ModelForm):
 
 
         widgets= {"content" : SummernoteWidget(),}
+
+
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = '__all__'
+
+class NewsLetterForm(forms.ModelForm):
+    class Meta:
+        model = NewsLetter
+        fields = '__all__'

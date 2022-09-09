@@ -1,15 +1,13 @@
 from datetime import timedelta
-from multiprocessing import context
-from unicodedata import category
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, View, UpdateView, CreateView
 from django.urls import reverse_lazy
-from .forms import PostForm
-from .models import Category, Post, Tag
+from .forms import ContactForm, PostForm
+from .models import Category, NewsLetter, Post, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.http import JsonResponse
 
 
 class CategoryMixin:
@@ -166,12 +164,27 @@ class SearchPostView(View):
 
 class ContactView(View):
     template_name= "News_template/Contact.html"
+    form_class = ContactForm
 
     def get(self,request, *args, **kwargs):
         return render(request, self.template_name)
     
     def post(self,request, *args, **kwargs):
-       pass
+       form = self.form_class(request.POST)
+       if form.is_valid():
+        form.save()
+       return render(request, self.template_name)
+
+class NewsLetterView(View):    
+    form_class = NewsLetter    
+    
+    def post(self,request, *args, **kwargs):
+       if request.is_ajax:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+         form.save()
+         return JsonResponse({"success" : True})            
+        return JsonResponse({"success":False }, status=400)
 
 class AboutView(View):
     template_name = "News_template/About.html"
@@ -185,6 +198,8 @@ class PostDeleteView(LoginRequiredMixin, View):
         post = get_object_or_404(Post, pk=pk)
         post.delete()
         return HttpResponseRedirect("/")
+
+
 
 
 

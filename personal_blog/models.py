@@ -1,3 +1,5 @@
+import email
+from email import message
 from django.db import models
 
 
@@ -67,3 +69,13 @@ class Post(TimeStampModel):
 
     def __str__(self):
         return self.title
+
+
+class NewsLetter(models.Model):
+    email = models.EmailField()
+
+class Contact(models.Model):
+    name = models.CharField(max_length=50)
+    email = models.EmailField()
+    message = models.TextField()
+    subject = models. CharField(max_length=250)

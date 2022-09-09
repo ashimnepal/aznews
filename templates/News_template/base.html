@@ -88,6 +88,8 @@
 		<!-- Jquery Plugins, main Jquery -->	
         <script src="{% static 'js/plugins.js'%}"></script>
         <script src="{% static 'js/main.js'%}"></script>
+        {% block extra_script%}
+        {% endblock extra_script %}
         
     </body>
 </html>
