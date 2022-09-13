@@ -1,9 +1,10 @@
 from datetime import timedelta
+from telnetlib import STATUS
 from django.shortcuts import HttpResponseRedirect, get_object_or_404, render
 from django.utils import timezone
 from django.views.generic import DetailView, ListView, View, UpdateView, CreateView
 from django.urls import reverse_lazy
-from .forms import ContactForm, PostForm
+from .forms import ContactForm, NewsLetterForm, PostForm
 from .models import Category, NewsLetter, Post, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
@@ -176,15 +177,17 @@ class ContactView(View):
        return render(request, self.template_name)
 
 class NewsLetterView(View):    
-    form_class = NewsLetter    
+    form_class = NewsLetterForm    
     
     def post(self,request, *args, **kwargs):
-       if request.is_ajax:
-        form = self.form_class(request.POST)
-        if form.is_valid():
-         form.save()
-         return JsonResponse({"success" : True})            
-        return JsonResponse({"success":False }, status=400)
+        is_ajax = request.headers.get("x-requested-width")
+        print(is_ajax)
+        if is_ajax == 'XMLHttpRequest':
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({"success": True}, status=200)
+        return JsonResponse({"success":False}, status=400)
 
 class AboutView(View):
     template_name = "News_template/About.html"

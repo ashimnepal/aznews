@@ -77,7 +77,7 @@ urlpatterns = [
     path(
         "newsletter/",
         NewsLetterView.as_view(),
-        name="about",
+        name="newsletter",
     ),
 
 
